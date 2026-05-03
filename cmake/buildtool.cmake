@@ -2,6 +2,7 @@ function(_nxdk_build_host_tool xbox_target host_target_root c_flags cpp_flags ou
     cmake_path(GET host_target_root FILENAME _out_target_name)
 
     set(_build_dir "${CMAKE_BINARY_DIR}/_nxdk_host_tools/${_out_target_name}")
+    set(_host_tmp_dir "${CMAKE_BINARY_DIR}/_nxdk_host_tools/_tmp")
     set(_host_defs "")
     set(_host_warning_flags "-w")
 
@@ -20,9 +21,17 @@ function(_nxdk_build_host_tool xbox_target host_target_root c_flags cpp_flags ou
     find_program(_NINJA_PATH Ninja REQUIRED)
 
     if(NOT TARGET _build_${_out_target_name})
+        # Set the temp diretory so we're not running into 
+        # permission issues when winflexbison goes to delete 
+        # a temp file, which is treated as a hard fault :O
         add_custom_command(
             OUTPUT ${_out_exe}
+            COMMAND ${CMAKE_COMMAND} -E make_directory "${_host_tmp_dir}"
             COMMAND ${CMAKE_COMMAND}
+                -E env
+                "TEMP=${_host_tmp_dir}"
+                "TMP=${_host_tmp_dir}"
+                ${CMAKE_COMMAND}
                 -Wno-deprecated
                 -S "${host_target_root}"
                 -B "${_build_dir}"
@@ -34,6 +43,10 @@ function(_nxdk_build_host_tool xbox_target host_target_root c_flags cpp_flags ou
                 "-DCMAKE_CXX_FLAGS:STRING=${_host_defs} ${_host_warning_flags} ${cpp_flags}"
                 -DCMAKE_BUILD_TYPE:STRING=Release
             COMMAND ${CMAKE_COMMAND}
+                -E env
+                "TEMP=${_host_tmp_dir}"
+                "TMP=${_host_tmp_dir}"
+                ${CMAKE_COMMAND}
                 "--build" "${_build_dir}"
                 "--target" "${_out_target_name}"
                 "--"

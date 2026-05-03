@@ -3,7 +3,8 @@ NXDK CMake Toolchain
 ## Dependencies
 | Dependancy | Description |
 | :--- | :--- |
-| **LLVM** | For clang and lld (and dlltool if not using prebuilt libxboxkrnl.lib) |
+| **Ninja** | Build system |
+| **LLVM** | For clang, clang++, and lld (and dlltool if not using prebuilt libxboxkrnl.lib) |
 | **Bison and Flex** | For building shader compilers for use by the host. |
 
 ## Libraries
@@ -105,3 +106,16 @@ nxdk_add_binaries(my_target
 ```
 
 ##
+
+## Usage
+See `samples/cmake_demo/CMakeLists.txt` for a basic usage example.
+
+##
+
+## Build Samples
+```
+git clone --recursive https://github.com/XboxDev/nxdk.git
+cd nxdk/samples
+cmake -S . -B build -G Ninja
+cmake --build build
+```

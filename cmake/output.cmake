@@ -75,7 +75,6 @@ function(nxdk_generate_xbe target_name)
 
         add_custom_command(
             TARGET ${target_name} POST_BUILD
-            DEPENDS ${_cxbe_exe}
             COMMAND ${CMAKE_COMMAND} -E make_directory "${_dir_path}"
             COMMAND ${CMAKE_COMMAND} -E rm -f "${_out_path}"
             COMMAND
@@ -86,7 +85,9 @@ function(nxdk_generate_xbe target_name)
                 "$<TARGET_FILE:${target_name}>"
             COMMENT "Generating XBE for ${target_name}"
         )
-        add_custom_target(${_xbe_target} ALL DEPENDS ${target_name})
+        add_custom_target(${_xbe_target} ALL 
+            DEPENDS ${target_name} ${_cxbe_exe}
+        )
         # the disc target depends on the xbe target, xiso target
         # depends on the disc target, so this ensures the correct order
         add_dependencies(${_disc_target} ${_xbe_target})
@@ -131,11 +132,12 @@ function(nxdk_generate_xiso target_name)
                 ${_disc_dir}
                 ${_xiso_path}
             WORKING_DIRECTORY ${_disc_output_path}
-            DEPENDS ${_disc_target}
             COMMENT "Generating XISO for ${target_name} at ${_xiso_path}"
             VERBATIM
         )
-        add_custom_target(${_xiso_target_name} ALL DEPENDS ${_disc_target})
+        add_custom_target(${_xiso_target_name} ALL 
+            DEPENDS ${_disc_target} ${_extract_xiso_exe}
+        )
     endif()
 endfunction()
 
@@ -146,12 +148,11 @@ macro(_nxdk_add_asset_file target_name disc_target asset_path out_path)
         get_filename_component(_out_dir ${out_path} DIRECTORY)
         add_custom_command(
             TARGET ${target_name} POST_BUILD
-            DEPENDS ${asset_path}
             COMMAND ${CMAKE_COMMAND} -E make_directory ${_out_dir}
             COMMAND ${CMAKE_COMMAND} -E copy_if_different ${asset_path} ${out_path}
             COMMENT "Adding asset ${asset_path} to ${out_path}"
         )
-        add_custom_target(${_asset_hash})
+        add_custom_target(${_asset_hash} ALL DEPENDS ${_asset_path})
         add_dependencies(${disc_target} ${_asset_hash})
     endif()
 endmacro()
@@ -262,7 +263,7 @@ function(nxdk_add_shaders target_name)
                 -DINPUT=${_tmp_out}
                 -DOUTPUT=${_inl_out}
                 -P "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/runandcapture.cmake"
-            COMMAND ${CMAKE_COMMAND} -E rm -f "${_tmp_out}"
+            # COMMAND ${CMAKE_COMMAND} -E rm -f "${_tmp_out}"
             COMMENT "Compiling shader ${_shader}"
         )
         target_sources(${target_name} PRIVATE ${_inl_out})

@@ -21,9 +21,6 @@ function(_nxdk_build_host_tool xbox_target host_target_root c_flags cpp_flags ou
     find_program(_NINJA_PATH Ninja REQUIRED)
 
     if(NOT TARGET _build_${_out_target_name})
-        # Set the temp diretory so we're not running into 
-        # permission issues when winflexbison goes to delete 
-        # a temp file, which is treated as a hard fault :O
         add_custom_command(
             OUTPUT ${_out_exe}
             COMMAND ${CMAKE_COMMAND} -E make_directory "${_host_tmp_dir}"

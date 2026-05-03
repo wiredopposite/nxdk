@@ -9,6 +9,7 @@ project(nxdk_samples C CXX ASM)
 
 add_subdirectory("${CMAKE_CURRENT_LIST_DIR}/.." "nxdk")
 
+add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/cmake_demo)
 add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/gamma)
 add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/gamma-fade)
 add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/hello)

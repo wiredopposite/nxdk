@@ -1,0 +1,8 @@
+add_library(nxdk_hal STATIC
+	${CMAKE_CURRENT_LIST_DIR}/audio.c
+	${CMAKE_CURRENT_LIST_DIR}/debug.c
+	${CMAKE_CURRENT_LIST_DIR}/fileio.c
+	${CMAKE_CURRENT_LIST_DIR}/led.c
+	${CMAKE_CURRENT_LIST_DIR}/video.c
+	${CMAKE_CURRENT_LIST_DIR}/xbox.c
+)

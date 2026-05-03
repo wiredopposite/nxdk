@@ -1,0 +1,33 @@
+add_library(nxdk_xboxrt STATIC
+	${CMAKE_CURRENT_LIST_DIR}/libc_extensions/stat.c
+	${CMAKE_CURRENT_LIST_DIR}/libc_extensions/direct.c
+	${CMAKE_CURRENT_LIST_DIR}/libc_extensions/strings.c
+	${CMAKE_CURRENT_LIST_DIR}/libc_extensions/wchar.c
+	${CMAKE_CURRENT_LIST_DIR}/libc_extensions/wchar_ext_.c
+	${CMAKE_CURRENT_LIST_DIR}/libc_extensions/wctype_ext_.c
+	${CMAKE_CURRENT_LIST_DIR}/libc_extensions/stdlib_ext_.c
+	${CMAKE_CURRENT_LIST_DIR}/libc_extensions/string_ext_.c
+	${CMAKE_CURRENT_LIST_DIR}/c_runtime/_alldiv.s
+	${CMAKE_CURRENT_LIST_DIR}/c_runtime/_allmul.s
+	${CMAKE_CURRENT_LIST_DIR}/c_runtime/_allrem.s
+	${CMAKE_CURRENT_LIST_DIR}/c_runtime/_allshl.s
+	${CMAKE_CURRENT_LIST_DIR}/c_runtime/_allshr.s
+	${CMAKE_CURRENT_LIST_DIR}/c_runtime/_aulldiv.s
+	${CMAKE_CURRENT_LIST_DIR}/c_runtime/_aullrem.s
+	${CMAKE_CURRENT_LIST_DIR}/c_runtime/_aullshl.s
+	${CMAKE_CURRENT_LIST_DIR}/c_runtime/_aullshr.s
+	${CMAKE_CURRENT_LIST_DIR}/c_runtime/_fltused.c
+	${CMAKE_CURRENT_LIST_DIR}/c_runtime/check_stack.c
+	${CMAKE_CURRENT_LIST_DIR}/c_runtime/chkstk.s
+	${CMAKE_CURRENT_LIST_DIR}/vcruntime/purecall.c
+	${CMAKE_CURRENT_LIST_DIR}/vcruntime/stack_protection.c
+	${CMAKE_CURRENT_LIST_DIR}/vcruntime/threadsafe_statics.c
+	${CMAKE_CURRENT_LIST_DIR}/vcruntime/vcruntime_exception.cpp
+	${CMAKE_CURRENT_LIST_DIR}/vcruntime/vcruntime_typeinfo.cpp
+	${CMAKE_CURRENT_LIST_DIR}/vcruntime/eh.cpp
+	${CMAKE_CURRENT_LIST_DIR}/vcruntime/excpt.cpp
+)
+target_compile_options(nxdk_xboxrt PRIVATE
+    -fno-rtti
+	-Wno-invalid-noreturn
+)

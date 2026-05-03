@@ -108,7 +108,7 @@ nxdk_add_binaries(my_target
 ##
 
 ## Usage
-See `samples/cmake_demo/CMakeLists.txt` for a basic usage example.
+See `samples/CMakeLists.txt` and `samples/cmake_demo/CMakeLists.txt` for a basic usage example.
 
 ##
 

@@ -39,7 +39,7 @@ function(nxdk_add_target target_name)
 endfunction()
 
 function(nxdk_generate_xbe target_name)
-    cmake_parse_arguments(ARG "" "DISC;PATH;TITLE" "" ${ARGN})
+    cmake_parse_arguments(ARG "" "DISC;PATH;TITLE;DEVKIT" "" ${ARGN})
     set(_disc_name ${ARG_DISC})
     set(_out_path ${ARG_PATH})
     set(_xbe_title ${ARG_TITLE})
@@ -67,7 +67,7 @@ function(nxdk_generate_xbe target_name)
 
         _nxdk_get_cxbe(${target_name} _cxbe_exe)
 
-        if(NOT CMAKE_BUILD_TYPE STREQUAL "Release")
+        if(${ARG_DEVKIT})
             set(_cxbe_flags "-MODE:debug")
         else()
             set(_cxbe_flags "-MODE:retail")

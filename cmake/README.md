@@ -37,7 +37,8 @@ nxdk_add_target(<target> [DISC <disc>])
 nxdk_generate_xbe(<target> 
                   [DISC <disc>] 
                   [PATH <path>] 
-                  [TITLE <title>])
+                  [TITLE <title>]
+                  [DEVKIT])
 ```
 | Argument | Required | Description |
 | :---- | :---- | :---- |
@@ -45,6 +46,7 @@ nxdk_generate_xbe(<target>
 | `DISC` | No | Name of the disc this XBE belongs to. Defaults to `<target>` if not specified. Multiple XBEs can share a disc and multiple discs can have the name xbe. Disc directory will be `"bin/<disc>"`. |
 | `PATH` | No | Relative output path on the disc, including filename. Defaults to "/default.xbe" if not specified. |
 | `TITLE` | No | XBE title, written to the XBE header. Defaults to `<target>` if not specified. |
+| `DEVKIT` | No | If set, will indicate non-kernel import table should be kept in the resulting XBE. Meant for linking against XBDM. |
 
 ##
 

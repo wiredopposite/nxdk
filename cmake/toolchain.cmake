@@ -4,22 +4,15 @@ endif()
 
 set(NXDK_DIR "$ENV{NXDK_DIR}")
 
-find_program(_CLANG clang)
-find_program(_CLANGPP clang++)
-find_program(_LLD lld-link)
+find_program(_CLANG_PATH clang REQUIRED)
+find_program(_CLANGPP_PATH clang++ REQUIRED)
+find_program(_LLD_PATH lld-link REQUIRED)
+find_program(_NINJA_PATH Ninja REQUIRED)
 
-if(NOT _CLANG)
-    message(FATAL_ERROR "Clang compiler not found. Please ensure it is installed and in your PATH.")
-elseif(NOT _CLANGPP)
-    message(FATAL_ERROR "Clang++ compiler not found. Please ensure it is installed and in your PATH.")
-elseif(NOT _LLD)
-    message(FATAL_ERROR "lld-link linker not found. Please ensure it is installed and in your PATH.")
-endif()
-
-set(CMAKE_C_COMPILER "${_CLANG}")
-set(CMAKE_CXX_COMPILER "${_CLANGPP}")
-set(CMAKE_ASM_COMPILER "${_CLANG}")
-set(CMAKE_LINKER "${_LLD}")
+set(CMAKE_C_COMPILER "${_CLANG_PATH}")
+set(CMAKE_CXX_COMPILER "${_CLANGPP_PATH}")
+set(CMAKE_ASM_COMPILER "${_CLANG_PATH}")
+set(CMAKE_LINKER "${_LLD_PATH}")
 set(CMAKE_C_LINK_EXECUTABLE
     "\"${CMAKE_LINKER}\" <LINK_FLAGS> <CMAKE_C_LINK_FLAGS> <OBJECTS> /out:<TARGET> <LINK_LIBRARIES>")
 set(CMAKE_CXX_LINK_EXECUTABLE

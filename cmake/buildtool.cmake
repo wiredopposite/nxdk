@@ -1,8 +1,9 @@
 function(_nxdk_build_host_tool xbox_target host_target_root c_flags cpp_flags out_exe)
     cmake_path(GET host_target_root FILENAME _out_target_name)
 
-    set(_build_dir "${host_target_root}/build")
+    set(_build_dir "${CMAKE_BINARY_DIR}/_nxdk_host_tools/${_out_target_name}")
     set(_host_defs "")
+    set(_host_warning_flags "-w")
 
     if(CMAKE_HOST_WIN32)
         set(_host_defs "-DWIN32")
@@ -13,29 +14,36 @@ function(_nxdk_build_host_tool xbox_target host_target_root c_flags cpp_flags ou
 
     set(${out_exe} "${_out_exe}" PARENT_SCOPE)
 
+    find_program(_CLANG_PATH clang REQUIRED)
+    find_program(_CLANGPP_PATH clang++ REQUIRED)
+    find_program(_LLD_PATH lld-link REQUIRED)
+    find_program(_NINJA_PATH Ninja REQUIRED)
+
     if(NOT TARGET _build_${_out_target_name})
-        if(NOT EXISTS "${_out_exe}")
-            add_custom_command(
-                OUTPUT ${_out_exe}
-                COMMAND ${CMAKE_COMMAND}
-                    -S "${host_target_root}"
-                    -B "${_build_dir}"
-                    -G Ninja
-                    -DCMAKE_TOOLCHAIN_FILE:FILEPATH=
-                    -DCMAKE_C_COMPILER:FILEPATH=clang
-                    -DCMAKE_CXX_COMPILER:FILEPATH=clang++
-                    "-DCMAKE_C_FLAGS:STRING=${_host_defs} ${c_flags}"
-                    "-DCMAKE_CXX_FLAGS:STRING=${_host_defs} ${cpp_flags}"
-                    -DCMAKE_BUILD_TYPE:STRING=Release
-                COMMAND ${CMAKE_COMMAND}
-                    "--build" "${_build_dir}"
-                    "--target" "${_out_target_name}"
-            )
-        endif()
+        add_custom_command(
+            OUTPUT ${_out_exe}
+            COMMAND ${CMAKE_COMMAND}
+                -Wno-deprecated
+                -S "${host_target_root}"
+                -B "${_build_dir}"
+                -G Ninja
+                -DCMAKE_TOOLCHAIN_FILE:FILEPATH=
+                -DCMAKE_C_COMPILER:FILEPATH=${_CLANG_PATH}
+                -DCMAKE_CXX_COMPILER:FILEPATH=${_CLANGPP_PATH}
+                "-DCMAKE_C_FLAGS:STRING=${_host_defs} ${_host_warning_flags} ${c_flags}"
+                "-DCMAKE_CXX_FLAGS:STRING=${_host_defs} ${_host_warning_flags} ${cpp_flags}"
+                -DCMAKE_BUILD_TYPE:STRING=Release
+            COMMAND ${CMAKE_COMMAND}
+                "--build" "${_build_dir}"
+                "--target" "${_out_target_name}"
+                "--"
+                "--quiet"
+        )
 
         add_custom_target(_build_${_out_target_name} ALL DEPENDS ${_out_exe})
-        add_dependencies(${xbox_target} _build_${_out_target_name})
     endif()
+
+    add_dependencies(${xbox_target} _build_${_out_target_name})
 endfunction()
 
 function(_nxdk_get_extract_xiso xbox_target out_exe)

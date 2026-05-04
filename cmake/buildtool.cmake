@@ -89,11 +89,27 @@ function(_nxdk_get_vp20 xbox_target out_exe)
 endfunction()
 
 function(_nxdk_get_fp20 xbox_target out_exe)
+    set(_fp20_c_flags "")
+    set(_fp20_cpp_flags "")
+    if(CMAKE_HOST_WIN32)
+        set(_fp20_c_flags "\
+            -DYY_NO_UNISTD_H \
+            -D_CRT_SECURE_NO_WARNINGS \
+            -D_CRT_NONSTDC_NO_WARNINGS")
+        set(_fp20_cpp_flags "\
+            -DYY_NO_UNISTD_H \
+            -D_CRT_SECURE_NO_WARNINGS \
+            -D_CRT_NONSTDC_NO_WARNINGS \
+            -include io.h \
+            -Disatty=_isatty \
+            -Dfileno=_fileno")
+    endif()
+
     _nxdk_build_host_tool(
         ${xbox_target}
         "$ENV{NXDK_DIR}/tools/fp20compiler"
-        "-DYY_NO_UNISTD_H -D_CRT_SECURE_NO_WARNINGS -D_CRT_NONSTDC_NO_WARNINGS"
-        "-DYY_NO_UNISTD_H -D_CRT_SECURE_NO_WARNINGS -D_CRT_NONSTDC_NO_WARNINGS -include io.h -Disatty=_isatty -Dfileno=_fileno"
+        "${_fp20_c_flags}"
+        "${_fp20_cpp_flags}"
         _out_exe
     )
     set(${out_exe} "${_out_exe}" PARENT_SCOPE)

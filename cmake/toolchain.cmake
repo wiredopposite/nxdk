@@ -44,10 +44,10 @@ set(WIN32 1)
 set(NXDK 1)
 
 set(NXDK_C_INCLUDES
-    ${NXDK_DIR}/lib
-    ${NXDK_DIR}/lib/xboxrt/libc_extensions
     ${NXDK_DIR}/lib/pdclib/include
     ${NXDK_DIR}/lib/pdclib/platform/xbox/include
+    ${NXDK_DIR}/lib
+    ${NXDK_DIR}/lib/xboxrt/libc_extensions
     ${NXDK_DIR}/lib/winapi
     ${NXDK_DIR}/lib/xboxrt/vcruntime
 )

@@ -5,7 +5,7 @@ if(NOT CMAKE_TOOLCHAIN_FILE)
 		CACHE FILEPATH "nxdk toolchain file")
 endif()
 
-project(nxdk_samples C CXX ASM)
+project(nxdk_samples C CXX)
 
 add_subdirectory("${CMAKE_CURRENT_LIST_DIR}/.." "nxdk")
 

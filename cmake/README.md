@@ -2,7 +2,7 @@ NXDK CMake Toolchain
 ====================
 
 ## Libraries
-| Library | Description |
+| Name | Description |
 | :--- | :--- |
 | **nxdk_runtime** | Runtime library required by all targets, contains xboxkrnl, hal, stdlibs, winapi, etc. |
 | **nxdk_core** | Core functionality, including drive mounting, filesystem, XBE parsing, and other utilities. |
@@ -10,7 +10,7 @@ NXDK CMake Toolchain
 | **nxdk_libpng** | PNG decoding |
 | **nxdk_net** | Network library, includes lwip and nxdk net API |
 | **nxdk_pbkit** | PBKit graphics library |
-| **nxdk_sdl** | SDL2 and related libraries (SDL2_image, SDL2_freetype) |
+| **nxdk_sdl** | SDL2 and related libraries (SDL2_image, SDL_tff) |
 | **nxdk_usb** | USB host stack, include all available drivers. Individual components are available (nxdk_usb_core, nxdk_usb_hid, etc.) if you don't need all drivers. |
 | **nxdk_zlib** | Zlib compression library |
 
@@ -18,11 +18,19 @@ NXDK CMake Toolchain
 See cmake/API.md for list of CMake methods available for use.
 
 ## Dependencies
-| Dependancy | Description |
-| :--- | :--- |
-| **Ninja** | Build system |
-| **LLVM** | For clang, clang++, and lld (and dlltool if not using prebuilt libxboxkrnl.lib) |
-| **Flex/Bison** | For building shader compilers for use by the host. |
+ - **cmake**
+ - **ninja**
+ - **clang/clang++**
+ - **lld-link**
+ - **flex/bison** (Only required if compiling shaders.)
+ - **dlltool** (Only required if regenerating libxboxkrnl.lib)
+
+On Linux all deps can be installed with
+```bash
+sudo apt update
+sudo apt install cmake ninja-build lld llvm clang flex bison
+```
+On Windows you can install CMake, Ninja, LLVM, and WinFlexBison and you'll have everything.
 
 ## Usage
 ```cmake

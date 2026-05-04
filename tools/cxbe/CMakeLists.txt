@@ -13,9 +13,11 @@ add_executable(cxbe
     ${CMAKE_CURRENT_LIST_DIR}/Common.cpp
 )
 
-target_compile_options(cxbe PRIVATE
-    -Dstrcasecmp=_stricmp
-    -Dstrncasecmp=_strnicmp
-    -D_CRT_SECURE_NO_WARNINGS
-    -D_CRT_NONSTDC_NO_WARNINGS
-)
+if(CMAKE_HOST_WIN32)
+    target_compile_options(cxbe PRIVATE
+        -Dstrcasecmp=_stricmp
+        -Dstrncasecmp=_strnicmp
+        -D_CRT_SECURE_NO_WARNINGS
+        -D_CRT_NONSTDC_NO_WARNINGS
+    )
+endif()

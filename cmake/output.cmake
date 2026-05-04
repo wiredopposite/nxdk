@@ -15,13 +15,7 @@ function(_nxdk_generate_disc target_name disc_name out_target_name)
     if(NOT TARGET ${_disc_target_name})
         # This is a placeholder target for adding deps to a disc
         # like xbes and assets before running extract-xiso
-        _nxdk_get_disc_output_path(${disc_name} _disc_output_path)
-        add_custom_command(
-            TARGET ${target_name} POST_BUILD
-            COMMAND ${CMAKE_COMMAND} 
-                -E make_directory "${_disc_output_path}"
-        )
-        add_custom_target(${_disc_target_name} ALL DEPENDS ${target_name})
+        add_custom_target(${_disc_target_name} ALL)
     endif()
 
     add_dependencies(${_disc_target_name} ${target_name})
@@ -62,8 +56,7 @@ function(nxdk_generate_xbe target_name)
     if(NOT TARGET ${_xbe_target})
         _nxdk_get_disc_output_path(${_disc_name} _disc_output_path)
         set(_out_path "${_disc_output_path}/${_out_path}")
-        file(TO_NATIVE_PATH "${_out_path}" _out_path)
-        get_filename_component(_dir_path ${_out_path} DIRECTORY)
+        get_filename_component(_dir_path "${_out_path}" DIRECTORY)
 
         _nxdk_get_cxbe(${target_name} _cxbe_exe)
 
@@ -74,7 +67,11 @@ function(nxdk_generate_xbe target_name)
         endif()
 
         add_custom_command(
-            TARGET ${target_name} POST_BUILD
+            OUTPUT "${_out_path}"
+            DEPENDS
+                ${target_name}
+                "$<TARGET_FILE:${target_name}>"
+                "${_cxbe_exe}"
             COMMAND ${CMAKE_COMMAND} -E make_directory "${_dir_path}"
             COMMAND ${CMAKE_COMMAND} -E rm -f "${_out_path}"
             COMMAND
@@ -84,9 +81,10 @@ function(nxdk_generate_xbe target_name)
                 ${_cxbe_flags}
                 "$<TARGET_FILE:${target_name}>"
             COMMENT "Generating XBE for ${target_name}"
+            VERBATIM
         )
         add_custom_target(${_xbe_target} ALL 
-            DEPENDS ${target_name} ${_cxbe_exe}
+            DEPENDS "${_out_path}"
         )
         # the disc target depends on the xbe target, xiso target
         # depends on the disc target, so this ensures the correct order
@@ -118,25 +116,27 @@ function(nxdk_generate_xiso target_name)
         _nxdk_get_extract_xiso(${target_name} _extract_xiso_exe)
         _nxdk_get_disc_output_path(${_disc_name} _disc_output_path)
 
-        set(_disc_dir "${_disc_output_path}")
-        set(_xiso_path "${_disc_output_path}.iso")
-        file(TO_NATIVE_PATH "${_disc_dir}" _disc_dir)
-        file(TO_NATIVE_PATH "${_xiso_path}" _xiso_path)
+        set(_bin_dir "${CMAKE_SOURCE_DIR}/bin")
+        file(RELATIVE_PATH _disc_rel "${_bin_dir}" "${_disc_output_path}")
+        set(_xiso_rel "${_disc_rel}.iso")
+        set(_xiso_path "${_bin_dir}/${_xiso_rel}")
 
         add_custom_command(
-            TARGET ${target_name} POST_BUILD
-            COMMAND ${CMAKE_COMMAND} -E rm -f ${_xiso_path}
+            OUTPUT "${_xiso_path}"
+            DEPENDS ${_disc_target} "${_extract_xiso_exe}"
+            COMMAND ${CMAKE_COMMAND} -E make_directory "${_disc_output_path}"
+            COMMAND ${CMAKE_COMMAND} -E rm -f "${_xiso_path}"
             COMMAND
                 ${_extract_xiso_exe}
                 "-c"
-                ${_disc_dir}
-                ${_xiso_path}
-            WORKING_DIRECTORY ${_disc_output_path}
+                "${_disc_rel}"
+                "${_xiso_rel}"
+            WORKING_DIRECTORY "${_bin_dir}"
             COMMENT "Generating XISO for ${target_name} at ${_xiso_path}"
             VERBATIM
         )
         add_custom_target(${_xiso_target_name} ALL 
-            DEPENDS ${_disc_target} ${_extract_xiso_exe}
+            DEPENDS "${_xiso_path}"
         )
     endif()
 endfunction()
@@ -145,14 +145,16 @@ macro(_nxdk_add_asset_file target_name disc_target asset_path out_path)
     set(_asset_tag "${target_name}_${disc_target}_${asset_path}_${out_path}")
     string(MD5 _asset_hash "${_asset_tag}")
     if(NOT TARGET ${_asset_hash})
-        get_filename_component(_out_dir ${out_path} DIRECTORY)
+        get_filename_component(_out_dir "${out_path}" DIRECTORY)
         add_custom_command(
-            TARGET ${target_name} POST_BUILD
-            COMMAND ${CMAKE_COMMAND} -E make_directory ${_out_dir}
-            COMMAND ${CMAKE_COMMAND} -E copy_if_different ${asset_path} ${out_path}
+            OUTPUT "${out_path}"
+            DEPENDS "${asset_path}"
+            COMMAND ${CMAKE_COMMAND} -E make_directory "${_out_dir}"
+            COMMAND ${CMAKE_COMMAND} -E copy_if_different "${asset_path}" "${out_path}"
             COMMENT "Adding asset ${asset_path} to ${out_path}"
+            VERBATIM
         )
-        add_custom_target(${_asset_hash} ALL DEPENDS ${_asset_path})
+        add_custom_target(${_asset_hash} ALL DEPENDS "${out_path}")
         add_dependencies(${disc_target} ${_asset_hash})
     endif()
 endmacro()

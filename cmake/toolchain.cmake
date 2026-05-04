@@ -7,7 +7,7 @@ set(NXDK_DIR "$ENV{NXDK_DIR}")
 find_program(_CLANG_PATH clang REQUIRED)
 find_program(_CLANGPP_PATH clang++ REQUIRED)
 find_program(_LLD_PATH lld-link REQUIRED)
-find_program(_NINJA_PATH Ninja REQUIRED)
+find_program(_NINJA_PATH ninja REQUIRED)
 
 set(CMAKE_C_COMPILER "${_CLANG_PATH}")
 set(CMAKE_CXX_COMPILER "${_CLANGPP_PATH}")

@@ -15,7 +15,7 @@ NXDK CMake Toolchain
 | **nxdk_zlib** | Zlib compression library |
 
 ## API
-See cmake/API.md for list of CMake methods available for use.
+See `cmake/API.md` for list of CMake methods available for use.
 
 ## Dependencies
  - **cmake**
@@ -25,7 +25,7 @@ See cmake/API.md for list of CMake methods available for use.
  - **flex/bison** (Only required if compiling shaders.)
  - **dlltool** (Only required if regenerating libxboxkrnl.lib)
 
-On Linux all deps can be installed with
+On Ubuntu all deps can be installed with
 ```bash
 sudo apt update
 sudo apt install cmake ninja-build lld llvm clang flex bison

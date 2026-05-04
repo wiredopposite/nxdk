@@ -4,16 +4,12 @@ if(NOT EXISTS "${NXDK_XBOXKRNL_LIB}")
     set(NXDK_XBOXKRNL_LIB "${CMAKE_CURRENT_BINARY_DIR}/libxboxkrnl.lib")
     set(NXDK_XBOXKRNL_DEF "${CMAKE_CURRENT_LIST_DIR}/xboxkrnl.exe.def")
 
-    find_program(_LLVM_DLLTOOL_EXE llvm-dlltool)
-
-    if(NOT _LLVM_DLLTOOL_EXE)
-        message(FATAL_ERROR "llvm-dlltool not found. Make sure LLVM is installed.")
-    endif()
+    find_program(_DLLTOOL_EXE llvm-dlltool REQUIRED)
 
     add_custom_command(
         OUTPUT "${NXDK_XBOXKRNL_LIB}"
         COMMAND
-            "${_LLVM_DLLTOOL_EXE}"
+            "${_DLLTOOL_EXE}"
             -d "${NXDK_XBOXKRNL_DEF}"
             -l "${NXDK_XBOXKRNL_LIB}"
             -m i386

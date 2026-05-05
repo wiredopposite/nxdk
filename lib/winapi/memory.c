@@ -62,7 +62,7 @@ VOID WINAPI ZeroMemory (PVOID Destination, SIZE_T length)
     RtlZeroMemory(Destination, length);
 }
 
-BOOL VirtualProtect(LPVOID lpAddress, SIZE_T dwSize, DWORD flNewProtect, PDWORD lpflOldProtect)
+BOOL VirtualProtect (LPVOID lpAddress, SIZE_T dwSize, DWORD flNewProtect, PDWORD lpflOldProtect)
 {
     NTSTATUS status;
     DWORD flOldProtect;
@@ -84,7 +84,7 @@ BOOL VirtualProtect(LPVOID lpAddress, SIZE_T dwSize, DWORD flNewProtect, PDWORD 
     return TRUE;
 }
 
-SIZE_T GetLargePageMinimum(VOID)
+SIZE_T GetLargePageMinimum (VOID)
 {
     // NtAllocateVirtualMemory treats MEM_LARGE_PAGES as an invalid param
     return 0;

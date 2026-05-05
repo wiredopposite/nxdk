@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 
 // SPDX-FileCopyrightText: 2019 Stefan Schmidt
+// SPDX-FileCopyrightText: 2026 John Grogan
 
 #ifndef __MEMORYAPI_H__
 #define __MEMORYAPI_H__
@@ -15,6 +16,8 @@ extern "C" {
 LPVOID VirtualAlloc (LPVOID lpAddress, SIZE_T dwSize, DWORD flAllocationType, DWORD flProtect);
 BOOL VirtualFree (LPVOID lpAddress, SIZE_T dwSize, DWORD dwFreeType);
 SIZE_T VirtualQuery (LPCVOID lpAddress, PMEMORY_BASIC_INFORMATION lpBuffer, SIZE_T dwLength);
+BOOL VirtualProtect (LPVOID lpAddress, SIZE_T dwSize, DWORD flNewProtect, PDWORD lpflOldProtect);
+SIZE_T GetLargePageMinimum (VOID);
 
 #ifdef __cplusplus
 }

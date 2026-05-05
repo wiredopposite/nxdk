@@ -13,6 +13,7 @@ set(CMAKE_C_COMPILER "${_CLANG_PATH}")
 set(CMAKE_CXX_COMPILER "${_CLANGPP_PATH}")
 set(CMAKE_ASM_COMPILER "${_CLANG_PATH}")
 set(CMAKE_LINKER "${_LLD_PATH}")
+
 set(CMAKE_C_LINK_EXECUTABLE
     "\"${CMAKE_LINKER}\" <LINK_FLAGS> <CMAKE_C_LINK_FLAGS> <OBJECTS> /out:<TARGET> <LINK_LIBRARIES>")
 set(CMAKE_CXX_LINK_EXECUTABLE
@@ -20,9 +21,16 @@ set(CMAKE_CXX_LINK_EXECUTABLE
 set(CMAKE_ASM_LINK_EXECUTABLE
     "\"${CMAKE_LINKER}\" <LINK_FLAGS> <CMAKE_ASM_LINK_FLAGS> <OBJECTS> /out:<TARGET> <LINK_LIBRARIES>")
 
-set(CMAKE_SYSTEM_NAME Generic)
-set(CMAKE_SYSTEM_VERSION 1)
+if(NOT DEFINED CMAKE_SYSTEM_NAME)
+    set(CMAKE_SYSTEM_NAME Generic) 
+endif()
+
+if(NOT DEFINED CMAKE_SYSTEM_VERSION)
+    set(CMAKE_SYSTEM_VERSION 1)
+endif()
+
 set(CMAKE_SYSTEM_PROCESSOR i386)
+
 set(TOOLCHAIN_PREFIX nxdk)
 set(TOOL_OS_SUFFIX "")
 
@@ -44,22 +52,22 @@ set(WIN32 1)
 set(NXDK 1)
 
 set(NXDK_C_INCLUDES
-    ${NXDK_DIR}/lib/pdclib/include
-    ${NXDK_DIR}/lib/pdclib/platform/xbox/include
-    ${NXDK_DIR}/lib
-    ${NXDK_DIR}/lib/xboxrt/libc_extensions
-    ${NXDK_DIR}/lib/winapi
-    ${NXDK_DIR}/lib/xboxrt/vcruntime
+    $ENV{NXDK_DIR}/lib/pdclib/include
+    $ENV{NXDK_DIR}/lib/pdclib/platform/xbox/include
+    $ENV{NXDK_DIR}/lib
+    $ENV{NXDK_DIR}/lib/xboxrt/libc_extensions
+    $ENV{NXDK_DIR}/lib/winapi
+    $ENV{NXDK_DIR}/lib/xboxrt/vcruntime
 )
 
 set(CMAKE_C_STANDARD_INCLUDE_DIRECTORIES ${NXDK_C_INCLUDES})
-set(CMAKE_CXX_STANDARD_INCLUDE_DIRECTORIES ${NXDK_DIR}/lib/libcxx/include ${NXDK_C_INCLUDES})
+set(CMAKE_CXX_STANDARD_INCLUDE_DIRECTORIES $ENV{NXDK_DIR}/lib/libcxx/include ${NXDK_C_INCLUDES})
 set(CMAKE_ASM_STANDARD_INCLUDE_DIRECTORIES
-    ${NXDK_DIR}/lib
-    ${NXDK_DIR}/lib/xboxrt
+    $ENV{NXDK_DIR}/lib
+    $ENV{NXDK_DIR}/lib/xboxrt
 )
 
-set(C_CXX_COMPILER_INIT_FLAGS "\
+set(_C_CXX_COMPILER_INIT_FLAGS "\
     -target i386-pc-win32 \
     -march=pentium3 \
     -fuse-ld=nxdk-link \
@@ -74,8 +82,8 @@ set(C_CXX_COMPILER_INIT_FLAGS "\
     -U__STDC_NO_THREADS__ \
 ")
 
-set(CMAKE_C_FLAGS_INIT "${C_CXX_COMPILER_INIT_FLAGS}")
-set(CMAKE_CXX_FLAGS_INIT "${C_CXX_COMPILER_INIT_FLAGS} -fno-exceptions")
+set(CMAKE_C_FLAGS_INIT "${_C_CXX_COMPILER_INIT_FLAGS}")
+set(CMAKE_CXX_FLAGS_INIT "${_C_CXX_COMPILER_INIT_FLAGS} -fno-exceptions")
 set(CMAKE_ASM_FLAGS_INIT "\
     -target i386-pc-win32 \
     -march=pentium3 \

@@ -27,7 +27,11 @@ add_library(nxdk_xboxrt STATIC
 	${CMAKE_CURRENT_LIST_DIR}/vcruntime/eh.cpp
 	${CMAKE_CURRENT_LIST_DIR}/vcruntime/excpt.cpp
 )
+target_include_directories(nxdk_xboxrt PRIVATE
+	${CMAKE_CURRENT_LIST_DIR}
+)
 target_compile_options(nxdk_xboxrt PRIVATE
+	$<$<COMPILE_LANGUAGE:ASM>:-I${CMAKE_CURRENT_LIST_DIR}>
     -fno-rtti
 	-Wno-invalid-noreturn
 )

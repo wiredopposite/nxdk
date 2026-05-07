@@ -5,3 +5,5 @@ endif()
 add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/lib)
 
 include(${CMAKE_CURRENT_LIST_DIR}/cmake/output.cmake)
+
+set_property(GLOBAL PROPERTY TARGET_SUPPORTS_SHARED_LIBS TRUE)
